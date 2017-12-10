@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using xNet;
 
@@ -20,32 +21,12 @@ namespace HH_Parser_Request
         DateTime End;
         private void button1_Click(object sender, EventArgs e)
         {
-            Start = DateTime.Now;
             request.AddUrlParam("specialization", "15");
-            #region subj
-            //.AddUrlParam("data2", "value2")
-            // Parameters 'x-www-form-urlencoded'.
-            //.AddParam("data1", "value1")
-            // .AddParam("data2", "value2")
-            // .AddParam("data2", "value2")
-
-            // Multipart data.
-            //.AddField("data1", "value1")
-            //.AddFile("game_code", @"C:\orion.zip")
-
-            // HTTP-header.
-            //.AddHeader("X-Apocalypse", "21.12.12");
-
-            // These parameters are sent in this request.
-            //request.Post("/").None();
-            // But in this request they will be gone.
-            //request.Post("/").None();
-
-            #endregion
-            string total = request.Get("http://hh.ru/search/resume").ToString();
-            richTextBox1.Text = total;
-            End = DateTime.Now;
-            this.Text = (End - Start).TotalSeconds.ToString();
+            string req_string = request.Get("http://hh.ru/search/resume").ToString();
+            MatchCollection Resume_MA = config.RESUME_REGEX.Matches(req_string);
+            foreach (Match OneResume in Resume_MA)
+                if (!richTextBox1.Text.Contains(OneResume.Value))
+                    richTextBox1.Text += OneResume.Value + "\n";
         }
         HttpRequest request;
         private void Form1_Load(object sender, EventArgs e)
