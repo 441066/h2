@@ -24,13 +24,19 @@ namespace HH_Parser_Request
             request.Cookies = new CookieDictionary();
             request.UserAgent = Http.ChromeUserAgent();
             request.MaximumAutomaticRedirections = 10;
-            //List<Specializations> SPECS = Classes.GetAllSpec();
+            SPECS = Classes.GetAllSpec();
+            for (int i = 0; i < SPECS.Count; i++)
+            {
+                for (int j = 0; j < SPECS[i].specializations.Count; j++)
+                    specialization_box.Items.Add(SPECS[i].specializations[j].id);
+            }
         }
 
         void Log(string text_to_log)
         {
             log_box.Text = DateTime.Now.ToString(DateFormat) + " > " + text_to_log + "\n" + log_box.Text;
         }
+        List<Specializations> SPECS;
         DateTime Work_Start;
         DateTime Work_End;
         DateTime Q_Start;
@@ -42,11 +48,13 @@ namespace HH_Parser_Request
         bool need_to_stop = false;
         string total_res_to_save = "";
         string DateFormat = "dd.MM.yyyy HH:mm:ss:fff";
+        int global_proff_counter = 0;
         private void button1_Click(object sender, EventArgs e)
         {
             if (!timer_main.Enabled)
             {
                 string[] parameters = req_params.Text.Split('\n');
+                request.AddUrlParam("specialization", specialization_box.Items[global_proff_counter]);
                 for (int i = 0; i < parameters.Length; i++)
                 {
                     try
@@ -54,6 +62,7 @@ namespace HH_Parser_Request
                         path_to_save += parameters[i] + "_";
                         string[] res = parameters[i].Split('=');
                         request.AddUrlParam(res[0], res[1]);
+                        //add spec
                     }
                     catch
                     {
@@ -103,7 +112,6 @@ namespace HH_Parser_Request
                 {
                     if (!qry_result.Text.Contains(OneResume.Value))
                     {
-
                         total_res_to_save += OneResume.Value.Replace("/resume/", "") + "\n";
                         temp_result_to_show_in_rtb += OneResume.Value.Replace("/resume/", "") + "\n";
                         global_counter_of_res_to_save++;
@@ -121,19 +129,20 @@ namespace HH_Parser_Request
             }
             //Show results in TB
             qry_result.Text = temp_result_to_show_in_rtb;
-            //save some here
-            //if (global_counter_of_res_to_save > CONF.RES_IN_FILE_TO_SAVE)
-            if (global_counter_of_res_to_save > 1000)
+            //save here
+
+            string path_to_save_with_spec = path_to_save + specialization_box.Items[global_proff_counter].ToString();
+            if (global_counter_of_res_to_save > CONF.RES_IN_FILE_TO_SAVE)
             {
                 string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
-                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save))
-                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save);
+                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
 
-                File.AppendAllText(Application.StartupPath + "\\" + path_to_save + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
+                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
                 global_counter_of_res_to_save = 0;
                 total_res_to_save = "";
                 qry_result.Text = "";
-                Log("Результат сохранен в файал: " + Application.StartupPath + "\\" + path_to_save + "\\" + filenametosave);
+                Log("Результат сохранен в файал: " + Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave);
             }
             //work here end
             if (!need_to_stop && global_page_counter < CONF.PAGES_COUNT)
@@ -146,12 +155,18 @@ namespace HH_Parser_Request
                 Work_End = DateTime.Now;
                 // save last results
                 string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
-                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save))
-                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save);
-                File.AppendAllText(Application.StartupPath + "\\" + path_to_save + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
+                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
+                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
                 SaveLog();
                 Log("Обработка закончена\nВремени затрачено (минут): " + (Work_End - Work_Start).TotalMinutes.ToString());
-
+                if (global_proff_counter < specialization_box.Items.Count)
+                {
+                    global_proff_counter++;
+                    global_page_counter = 0;
+                    Log("Переходим к следующей специальности: " + specialization_box.Items[global_proff_counter]);
+                    timer_main.Start();
+                }
                 //save last here
             }
         }
