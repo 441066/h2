@@ -31,6 +31,7 @@ namespace HH_Parser_Request
         public static string URL_RES = "http://hh.ru/search/resume";
         public const int PAGES_COUNT = 249;
         public const int RES_IN_FILE_TO_SAVE = 1000;
+        public const int RES_IN_FILE_TO_SAVE_2 = 1000;
 
     }
 }

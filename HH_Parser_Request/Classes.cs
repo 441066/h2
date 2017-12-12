@@ -27,7 +27,9 @@ namespace HH_Parser_Request
         public static List<Specializations> GetAllSpec()
         {
             List<Specializations> Specs = new List<Specializations>();
-            var request = new HttpRequest();
+            HttpRequest request = new HttpRequest();
+            //request.Proxy.Host = "192.168.1.234";
+            //request.Proxy.Port = 3128;
             string result = request.Get("https://api.hh.ru/specializations").ToString();
             Specs = JsonConvert.DeserializeObject<List<Specializations>>(result);       
             return Specs;
