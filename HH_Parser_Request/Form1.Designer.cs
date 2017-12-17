@@ -37,7 +37,7 @@
             this.req_params = new System.Windows.Forms.RichTextBox();
             this.log_box = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.specialization_box = new System.Windows.Forms.ComboBox();
+            this.spec_box = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // qry_result
@@ -45,16 +45,16 @@
             this.qry_result.BackColor = System.Drawing.Color.Black;
             this.qry_result.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.qry_result.ForeColor = System.Drawing.Color.Lime;
-            this.qry_result.Location = new System.Drawing.Point(14, 245);
+            this.qry_result.Location = new System.Drawing.Point(14, 330);
             this.qry_result.Name = "qry_result";
             this.qry_result.ReadOnly = true;
-            this.qry_result.Size = new System.Drawing.Size(375, 395);
+            this.qry_result.Size = new System.Drawing.Size(375, 310);
             this.qry_result.TabIndex = 0;
             this.qry_result.Text = "";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(14, 211);
+            this.button1.Location = new System.Drawing.Point(12, 296);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(375, 28);
             this.button1.TabIndex = 1;
@@ -78,10 +78,12 @@
             // 
             // req_params
             // 
+            this.req_params.BackColor = System.Drawing.Color.Black;
             this.req_params.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.req_params.ForeColor = System.Drawing.Color.Lime;
             this.req_params.Location = new System.Drawing.Point(14, 29);
             this.req_params.Name = "req_params";
-            this.req_params.Size = new System.Drawing.Size(375, 142);
+            this.req_params.Size = new System.Drawing.Size(375, 77);
             this.req_params.TabIndex = 3;
             this.req_params.Text = "area=1\nexperience=noExperience";
             // 
@@ -106,23 +108,24 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "log";
             // 
-            // specialization_box
+            // spec_box
             // 
-            this.specialization_box.BackColor = System.Drawing.Color.Black;
-            this.specialization_box.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.specialization_box.ForeColor = System.Drawing.Color.Lime;
-            this.specialization_box.FormattingEnabled = true;
-            this.specialization_box.Location = new System.Drawing.Point(12, 177);
-            this.specialization_box.Name = "specialization_box";
-            this.specialization_box.Size = new System.Drawing.Size(377, 23);
-            this.specialization_box.TabIndex = 6;
+            this.spec_box.BackColor = System.Drawing.Color.Black;
+            this.spec_box.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.spec_box.ForeColor = System.Drawing.Color.Lime;
+            this.spec_box.Location = new System.Drawing.Point(12, 112);
+            this.spec_box.Name = "spec_box";
+            this.spec_box.ReadOnly = true;
+            this.spec_box.Size = new System.Drawing.Size(375, 178);
+            this.spec_box.TabIndex = 7;
+            this.spec_box.Text = resources.GetString("spec_box.Text");
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1009, 652);
-            this.Controls.Add(this.specialization_box);
+            this.Controls.Add(this.spec_box);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.log_box);
             this.Controls.Add(this.req_params);
@@ -149,7 +152,7 @@
         private System.Windows.Forms.RichTextBox req_params;
         private System.Windows.Forms.RichTextBox log_box;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox specialization_box;
+        private System.Windows.Forms.RichTextBox spec_box;
     }
 }
 
