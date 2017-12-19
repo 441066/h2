@@ -26,7 +26,7 @@ namespace HH_Parser_Request
         int global_page_counter = 1;
         bool need_to_stop = false;
         string total_res_to_save = "";
-        string DateFormat = "dd.MM.yyyy HH:mm:ss:fff";
+        string DateFormat = "dd.MM.yy HH:mm:ss";
         int global_proff_counter = 0;
         List<HeaderParameters> HEADERS;
         string[] SPEACIALIZERS;
@@ -98,7 +98,7 @@ namespace HH_Parser_Request
             if (req_string.Length > 500)
             {
                 MatchCollection Resume_MA = CONF.RESUME_REGEX.Matches(req_string);
-                Log(String.Format("На странице {0} найдено: {1}", global_page_counter, Resume_MA.Count));
+                Log(String.Format("Страница: {0} Специальность: {2} Найдено: {1} Всего: {3}/{4}", global_page_counter, Resume_MA.Count, SPEACIALIZERS[global_proff_counter], global_proff_counter, SPEACIALIZERS.Length));
                 if (Resume_MA.Count > 0)
                 {
                     foreach (Match OneResume in Resume_MA)
