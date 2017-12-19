@@ -18,6 +18,7 @@ namespace HH_Parser_Request
         {
             InitializeComponent();
         }
+        bool go_next_spec = false;
         DateTime Work_Start;
         DateTime Work_End;
         string path_to_save = "";
@@ -98,18 +99,25 @@ namespace HH_Parser_Request
             {
                 MatchCollection Resume_MA = CONF.RESUME_REGEX.Matches(req_string);
                 Log(String.Format("На странице {0} найдено: {1}", global_page_counter, Resume_MA.Count));
-                foreach (Match OneResume in Resume_MA)
+                if (Resume_MA.Count > 0)
                 {
-                    if (!qry_result.Text.Contains(OneResume.Value))
+                    foreach (Match OneResume in Resume_MA)
                     {
-                        total_res_to_save += OneResume.Value.Replace("/resume/", "") + "\n";
-                        temp_result_to_show_in_rtb += OneResume.Value.Replace("/resume/", "") + "\n";
-                        global_counter_of_res_to_save++;
+                        if (!qry_result.Text.Contains(OneResume.Value))
+                        {
+                            total_res_to_save += OneResume.Value.Replace("/resume/", "") + "\n";
+                            temp_result_to_show_in_rtb += OneResume.Value.Replace("/resume/", "") + "\n";
+                            global_counter_of_res_to_save++;
+                        }
+                        else
+                        {
+                            //paste some sheet about repeats
+                        }
                     }
-                    else
-                    {
-                        //paste some sheet about repeats
-                    }
+                }
+                else
+                {
+                    go_next_spec = true;
                 }
             }
             else
@@ -122,6 +130,7 @@ namespace HH_Parser_Request
             //save here
 
             string path_to_save_with_spec = path_to_save + SPEACIALIZERS[global_proff_counter].ToString();
+            //ok save
             if (global_counter_of_res_to_save > CONF.RES_IN_FILE_TO_SAVE)
             {
                 string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
@@ -157,8 +166,28 @@ namespace HH_Parser_Request
                     Log("Переходим к следующей специальности: " + SPEACIALIZERS[global_proff_counter]);
                     timer_main.Start();
                 }
+            }
+            //save last here
+            if (go_next_spec)
+            {
+                go_next_spec = false;
+                Work_End = DateTime.Now;
+                string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
+                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
+                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
+                SaveLog();
+                Log("Обработка закончена\nВремени затрачено (минут): " + (Work_End - Work_Start).TotalMinutes.ToString());
+                global_proff_counter++;
+                global_page_counter = 1;
+                if (global_proff_counter < SPEACIALIZERS.Length)
+                {
+                    Log("Переходим к следующей специальности: " + SPEACIALIZERS[global_proff_counter]);
+                    timer_main.Start();
+                }
                 else
                 {
+                    timer_main.Stop();
                     Work_End = DateTime.Now;
                     Log("ВСЕ, РАБОТА ВООБЩЕ ЗАКОНЧЕНА.\nВремени затрачено (минут): " + (Work_End - Work_Start).TotalMinutes.ToString());
                     filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
@@ -167,7 +196,6 @@ namespace HH_Parser_Request
                     File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
                     MessageBox.Show("Всё, запрос полностью обработан!");
                 }
-                //save last here
             }
         }
     }

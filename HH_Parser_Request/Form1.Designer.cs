@@ -64,7 +64,7 @@
             // 
             // timer_main
             // 
-            this.timer_main.Interval = 10;
+            this.timer_main.Interval = 800;
             this.timer_main.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label1
@@ -115,7 +115,6 @@
             this.spec_box.ForeColor = System.Drawing.Color.Lime;
             this.spec_box.Location = new System.Drawing.Point(12, 112);
             this.spec_box.Name = "spec_box";
-            this.spec_box.ReadOnly = true;
             this.spec_box.Size = new System.Drawing.Size(375, 178);
             this.spec_box.TabIndex = 7;
             this.spec_box.Text = resources.GetString("spec_box.Text");
