@@ -138,7 +138,8 @@ namespace HH_Parser_Request
             else
             {
                 Log("Ответ слишком короткий, останавливаем работу");
-                need_to_stop = true;
+                timer_main.Interval = 1000;
+                //need_to_stop = true;
             }
             //Show results in TB
             qry_result.Text = temp_result_to_show_in_rtb;
