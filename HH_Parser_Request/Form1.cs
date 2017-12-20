@@ -19,6 +19,7 @@ namespace HH_Parser_Request
             InitializeComponent();
         }
         bool go_next_spec = false;
+        long total_global_res_counter = 0;
         DateTime Work_Start;
         DateTime Work_End;
         string path_to_save = "";
@@ -72,7 +73,7 @@ namespace HH_Parser_Request
             if (!Directory.Exists(Application.StartupPath + "\\log"))
                 Directory.CreateDirectory(Application.StartupPath + "\\log");
             Log("Сохраняем лог в файл");
-            File.AppendAllText(Application.StartupPath + "\\log\\log_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + ".txt", log_box.Text, Encoding.UTF8);
+            File.AppendAllText(Application.StartupPath + "\\log\\log_" + DateTime.Now.ToString("dd_MM_yyyy") + ".txt", log_box.Text, Encoding.UTF8);
             log_box.Text = "";
             total_res_to_save = "";
             qry_result.Text = "";
@@ -114,12 +115,14 @@ namespace HH_Parser_Request
             {
                 MatchCollection Resume_MA = CONF.RESUME_REGEX.Matches(req_string);
                 Log(String.Format("Страница: {0} Специальность: {2} Найдено: {1} Всего: {3}/{4}", global_page_counter, Resume_MA.Count, SPEACIALIZERS[global_proff_counter], global_proff_counter, SPEACIALIZERS.Length));
+                notifyIcon1.Text = String.Format("Всего найдено: {0} Отработано: {2}/{3}", total_global_res_counter, SPEACIALIZERS[global_proff_counter], global_proff_counter, SPEACIALIZERS.Length);
                 if (Resume_MA.Count > 0)
                 {
                     foreach (Match OneResume in Resume_MA)
                     {
                         if (!qry_result.Text.Contains(OneResume.Value))
                         {
+                            total_global_res_counter++;
                             total_res_to_save += OneResume.Value.Replace("/resume/", "") + "\n";
                             temp_result_to_show_in_rtb += OneResume.Value.Replace("/resume/", "") + "\n";
                             global_counter_of_res_to_save++;
@@ -169,7 +172,7 @@ namespace HH_Parser_Request
                 {
                     global_proff_counter++;
                     global_page_counter = 1;
-                    Log("Переходим к следующей специальности: " + SPEACIALIZERS[global_proff_counter]);
+                    Log("Переходим к следующей специальности: " + SPEACIALIZERS[global_proff_counter] + " Отработано: " + global_proff_counter + "/" + SPEACIALIZERS.Length);
                     timer_main.Start();
                 }
             }
@@ -186,7 +189,7 @@ namespace HH_Parser_Request
                 global_page_counter = 1;
                 if (global_proff_counter < SPEACIALIZERS.Length)
                 {
-                    Log("Переходим к следующей специальности: " + SPEACIALIZERS[global_proff_counter]);
+                    Log("Переходим к следующей специальности: " + SPEACIALIZERS[global_proff_counter] + " Отработано: " + global_proff_counter + "/" + SPEACIALIZERS.Length);
                     timer_main.Start();
                 }
                 else
@@ -199,6 +202,26 @@ namespace HH_Parser_Request
                     MessageBox.Show("Всё, запрос полностью обработан!");
                 }
             }
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+                notifyIcon1.Visible = true;
+            }
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            notifyIcon1.Visible = false;
+        }
+
+        private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
+        {
         }
     }
 }
