@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HH_Parser_Request
@@ -77,7 +78,11 @@ namespace HH_Parser_Request
             total_res_to_save = "";
             qry_result.Text = "";
         }
-        private void timer1_Tick(object sender, EventArgs e)
+        public async Task<string> Request(string url, string type)
+        {
+            return await Classes.Request(url, null, type, "");
+        }
+        private async void timer1_Tick(object sender, EventArgs e)
         {
             timer_main.Stop();
             string temp_result_to_show_in_rtb = "";
@@ -108,7 +113,7 @@ namespace HH_Parser_Request
 
             url_params += "&page=" + global_page_counter;
             //HEADERS.Add(new HeaderParameters("page", global_page_counter.ToString()));
-            string req_string = Classes.Request(CONF.URL_RES + url_params, HEADERS, "GET", "");
+            string req_string = await Classes.Request(CONF.URL_RES + url_params, HEADERS, "GET", "");
             //look if answer is long enough
             if (req_string.Length > 500)
             {

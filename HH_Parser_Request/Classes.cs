@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
+using System.Threading;
 using System.Text;
 
 namespace HH_Parser_Request
@@ -37,58 +39,44 @@ namespace HH_Parser_Request
 
     class Classes
     {
-        public static string Request(string url,List<HeaderParameters> PARAMS, string type, string body)
+        public static async Task<string> Request(string url, List<HeaderParameters> PARAMS, string type, string body)
         {
-            try
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            if (PARAMS != null)
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                if (PARAMS != null)
+                for (int i = 0; i < PARAMS.Count; i++)
                 {
-                    for (int i = 0; i < PARAMS.Count; i++)
-                    {
-                        request.Headers.Add(PARAMS[i].key, PARAMS[i].value);
-                    }
+                    request.Headers.Add(PARAMS[i].key, PARAMS[i].value);
                 }
-                request.Proxy = WebRequest.GetSystemWebProxy();
-                request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
-                request.Timeout = 30 * 1000;
-                request.CookieContainer = new CookieContainer();
-                request.MaximumAutomaticRedirections = 10;
-                if (body != "")
-                {
-                    UTF8Encoding encoding = new UTF8Encoding();
-                    byte[] bytes = encoding.GetBytes(body);
-                    request.ContentType = "application/json";
-                    request.ContentLength = bytes.Length;
-                    Stream newStream = request.GetRequestStream();
-                    newStream.Write(bytes, 0, bytes.Length);
-                }
-                else
-                    request.ContentLength = 0;
-                HttpWebResponse Resp = (HttpWebResponse)request.GetResponse();
-                Stream Str = Resp.GetResponseStream();
-                StreamReader reader = new StreamReader(Str);
-                string return_string = reader.ReadToEnd();
-                reader.Close();
-                Resp.Close();
-                return return_string;
             }
-            catch (Exception ex_q)
+            request.Proxy = WebRequest.GetSystemWebProxy();
+            request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
+            request.Timeout = 30 * 1000;
+            request.CookieContainer = new CookieContainer();
+            request.MaximumAutomaticRedirections = 10;
+            if (body != "")
             {
-                return ex_q.Message;
+                UTF8Encoding encoding = new UTF8Encoding();
+                byte[] bytes = encoding.GetBytes(body);
+                request.ContentType = "application/json";
+                request.ContentLength = bytes.Length;
+                Stream newStream = request.GetRequestStream();
+                newStream.Write(bytes, 0, bytes.Length);
             }
-        }
+            else
+                request.ContentLength = 0;
+            HttpWebResponse Resp = default(HttpWebResponse);
 
-        //on use now
-        public static List<Specializations> GetAllSpec()
-        {
-            //using (var request=new )
+            await Task.Run(() =>
             {
-                List<Specializations> Specs = new List<Specializations>();
-                string result = Request("https://api.hh.ru/specializations", null, "GET", "");
-                Specs = JsonConvert.DeserializeObject<List<Specializations>>(result);
-                return Specs;
-            }
+                Resp = (HttpWebResponse)request.GetResponse();
+            });
+            Stream Str = Resp.GetResponseStream();
+            StreamReader reader = new StreamReader(Str);
+            string return_string = reader.ReadToEnd();
+            reader.Close();
+            Resp.Close();
+            return return_string;
         }
     }
 }
