@@ -26,7 +26,7 @@ namespace HH_Parser_Request
         int global_counter_of_res_to_save = 0;
         int global_page_counter = 1;
         string total_res_to_save = "";
-        string DateFormat = "dd.MM.yy HH:mm:ss";
+        string DateFormat = "dd.MM.yy HH:mm:ss:ffff";
         int global_proff_counter = 0;
         int global_query_counter = 0;
         List<QueryParams> HEADERS;
@@ -67,7 +67,7 @@ namespace HH_Parser_Request
         }
         void Log(string text_to_log)
         {
-            log_box.Text = log_box.Text + "\n" + DateTime.Now.ToString(DateFormat) + " > " + text_to_log;
+            log_box.Text += DateTime.Now.ToString(DateFormat) + " > " + text_to_log + "\n";
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -90,31 +90,29 @@ namespace HH_Parser_Request
                 Directory.CreateDirectory(Application.StartupPath + "\\log");
             //Log("Сохраняем лог в файл");
             File.AppendAllText(Application.StartupPath + "\\log\\log_" + DateTime.Now.ToString("dd_MM_yyyy") + ".txt", log_box.Text, Encoding.UTF8);
-            //log_box.Text = "";
+            log_box.Text = "";
             total_res_to_save = "";
             qry_result.Text = "";
         }
 
-        public async Task<string> Request(string url, string type)
+        public  /*Task<string>*/ string Request(string url, string type)
         {
-            return await Classes.Request(url, type, "");
+            return /*await*/ Classes.Request(url, type, "");
         }
 
-        private async void timer1_Tick(object sender, EventArgs e)
+        private /*async*/ void timer1_Tick(object sender, EventArgs e)
         {
             timer_main.Stop();
             //Если есть запросы
             if (global_query_counter < HEADERS.Count)
-            {
-
-                //если есть специальности по запросу
+            {            
+                //и если есть специальности по запросу
                 if (global_proff_counter < SPEACIALIZERS.Length)
                 {
-                    //если есть страницы
-                    if (global_page_counter < CONF.PAGES_COUNT)
+                    //и если есть страницы
+                    if (global_page_counter <= CONF.PAGES_COUNT)
                     {
-
-                        //////////////////////////////////////
+                        /////////////////
 
                         string temp_result_to_show_in_rtb = "";
                         if (log_box.Text.Length > 15000)
@@ -139,12 +137,11 @@ namespace HH_Parser_Request
 
                         url_params += "&page=" + global_page_counter;
                         Log(String.Format("Отправляем запрос: {0} ", CONF.URL_RES + url_params));
-                        string req_string = await Classes.Request(CONF.URL_RES + url_params, "GET", "");
+                        string req_string = /*await*/ Classes.Request(CONF.URL_RES + url_params, "GET", "");
                         //look if answer is long enough
                         if (req_string.Length > 500)
                         {
                             MatchCollection Resume_MA = CONF.RESUME_REGEX.Matches(req_string);
-                            Log(String.Format("Специальность: {2} Страница: {0} Найдено: {1} Всего в запросе: {3}/{4}", global_page_counter, Resume_MA.Count, SPEACIALIZERS[global_proff_counter], (global_proff_counter + 1), SPEACIALIZERS.Length));
                             if (Resume_MA.Count > 0)
                             {
                                 foreach (Match OneResume in Resume_MA)
@@ -180,10 +177,10 @@ namespace HH_Parser_Request
                         {
                             //переходим к след. специальности принудительно, т.к страницы закончились
                             SaveFile(path_to_save_with_spec);
+                            //Log(String.Format("Переходим к следующей специальности т.к результаты закончились {0}", SPEACIALIZERS[global_proff_counter]));
                             global_proff_counter++;
                             //обнуляем страницы
                             global_page_counter = 1;
-                            Log(String.Format("Принудительно переходим к специальности {0}", SPEACIALIZERS[global_proff_counter]));
                             timer_main.Start();
                         }
                         else
@@ -201,7 +198,7 @@ namespace HH_Parser_Request
                     {
                         //переходим к след. специальности т.к закончились страницы
                         SaveFile(path_to_save_with_spec);
-                        Log(String.Format("Переходим к специальности {0} т.к закончились страницы", SPEACIALIZERS[global_proff_counter]));
+                        //Log(String.Format("Переходим к специальности {0} т.к закончились страницы", SPEACIALIZERS[global_proff_counter]));
                         global_proff_counter++;
                         //обнуляем страницы
                         global_page_counter = 1;
@@ -211,10 +208,15 @@ namespace HH_Parser_Request
                 else
                 {
                     //переходим к след. запросу т.к закончились специализации и страницы
-                    Log(String.Format("Переходим к следующему запросу {0}-{1}", HEADERS[global_query_counter].Params[0].Key, HEADERS[global_query_counter].Params[0].Value));
                     global_query_counter++;
                     global_proff_counter = 0;
                     global_page_counter = 1;
+                    try
+                    {
+                        Log(String.Format("=======Переходим к следующему запросу {0}-{1}=======", HEADERS[global_query_counter].Params[0].Key, HEADERS[global_query_counter].Params[0].Value));
+                    }
+                    catch
+                    { }
                     SaveFile(path_to_save_with_spec);
                     timer_main.Start();
                 }

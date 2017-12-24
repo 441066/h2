@@ -26,7 +26,7 @@ namespace HH_Parser_Request
 
     class Classes
     {
-        public static async Task<string> Request(string url, string type, string body)
+        public static /*Task<string>*/ string Request(string url, string type, string body)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = WebRequest.GetSystemWebProxy();
@@ -46,10 +46,10 @@ namespace HH_Parser_Request
             else
                 request.ContentLength = 0;
             HttpWebResponse Resp = default(HttpWebResponse);
-            await Task.Run(() =>
-            {
+            //await Task.Run(() =>
+           // {
                 Resp = (HttpWebResponse)request.GetResponse();
-            });
+           //});
             Stream Str = Resp.GetResponseStream();
             StreamReader reader = new StreamReader(Str);
             string return_string = reader.ReadToEnd();
