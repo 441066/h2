@@ -18,7 +18,7 @@ namespace HH_Parser_Request
     }
     class QueryParams
     {
-        List<QueryParam> Params;
+        public List<QueryParam> Params;
         public QueryParams(List<QueryParam> ListOfParams)
         {
             Params = ListOfParams;
