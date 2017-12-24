@@ -15,10 +15,6 @@ namespace HH_Parser_Request
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
         bool go_next_spec = false;
         DateTime Work_Start;
         DateTime Work_End;
@@ -29,14 +25,22 @@ namespace HH_Parser_Request
         string total_res_to_save = "";
         string DateFormat = "dd.MM.yy HH:mm:ss";
         int global_proff_counter = 0;
-        List<QueryParams> HEADERS;
+
+        List<QueryParams> queryParamsList;
+
         string[] SPEACIALIZERS;
+
+        public Form1()
+        {
+            queryParamsList = new List<QueryParams>();
+            InitializeComponent();
+        }
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             //nothing is do here
             string[] item_as_str = new string[] { "1", "area", "1" };
             ListViewItem Item = new ListViewItem(item_as_str);
-            listView1.Items.Add(Item);
         }
         void SaveFile(string path_to_save_with_spec)
         {
@@ -97,7 +101,7 @@ namespace HH_Parser_Request
             //HEADERS = new List<HeaderParameters>();
             url_params = "/?specialization=" + SPEACIALIZERS[global_proff_counter].ToString();
             //HEADERS.Add(new HeaderParameters("specialization", SPEACIALIZERS[global_proff_counter].ToString()));
-            string[] parameters = req_params.Text.Split('\n');
+            string[] parameters = new string[0];
             path_to_save = "";
             for (int i = 0; i < parameters.Length; i++)
             {
@@ -116,7 +120,7 @@ namespace HH_Parser_Request
 
             url_params += "&page=" + global_page_counter;
             //HEADERS.Add(new HeaderParameters("page", global_page_counter.ToString()));
-            string req_string = await Classes.Request(CONF.URL_RES + url_params, HEADERS, "GET", "");
+            string req_string = await Classes.Request(CONF.URL_RES + url_params, queryParamsList, "GET", "");
             //look if answer is long enough
             if (req_string.Length > 500)
             {
@@ -208,6 +212,57 @@ namespace HH_Parser_Request
                     MessageBox.Show("Всё, запрос полностью обработан!");
                 }
             }
+        }
+
+        /// <summary>
+        /// Handle list item checked event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0)
+            {
+                return; 
+            }
+
+            var selectedItem = (QueryParams) listView1.SelectedItems[0];
+            dataGridView1.DataSource = selectedItem.Params;
+        }
+
+        /// <summary>
+        /// Handle add new query params list item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var queryParams = new QueryParams();
+            queryParamsList.Add(queryParams);
+
+            listView1.Items.Add(queryParams);
+        }
+
+        /// <summary>
+        /// Handle cell value changed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            var selectedItem = (QueryParams)listView1.SelectedItems[0];
+            selectedItem.SetText();
+        }
+
+        /// <summary>
+        /// Handle delete row event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            var selectedItem = (QueryParams)listView1.SelectedItems[0];
+            selectedItem.SetText();
         }
     }
 }

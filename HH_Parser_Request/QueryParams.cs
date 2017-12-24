@@ -1,39 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HH_Parser_Request
 {
-    class QueryParam
+    internal class QueryParam
     {
-        public QueryParam(string i_key, string i_value)
+        public QueryParam() { }
+        public QueryParam(string key, string value)
         {
-            Key = i_key;
-            Value = i_value;
+            Key = key;
+            Value = value;
         }
         public string Key { get; set; }
         public string Value { get; set; }
     }
-    class QueryParams
+
+    internal class QueryParams : ListViewItem
     {
-        List<QueryParam> Params;
-        public QueryParams(List<QueryParam> ListOfParams)
+        public BindingList<QueryParam> Params { get; set; }
+
+        public QueryParams(BindingList<QueryParam> queryParams)
         {
-            Params = ListOfParams;
+            Params = queryParams;
         }
         public QueryParams()
         {
-            Params = new List<QueryParam>();
+            Params = new BindingList<QueryParam>()
+            {
+                AllowNew = true,
+                AllowRemove = true,
+                AllowEdit = true
+            };
+            SetText();
         }
-        public void PushParam(QueryParam QParamToAdd)
+        public void PushParam(QueryParam queryParam)
         {
-            Params.Add(QParamToAdd);
+            Params.Add(queryParam);
         }
-        public void RemoveParam(QueryParam QParamToPull)
+        public void RemoveParam(QueryParam queryParam)
         {
-            Params.Remove(QParamToPull);
+            Params.Remove(queryParam);
+        }
+
+        /// <summary>
+        /// Set text property of ListViewItem
+        /// </summary>
+        public void SetText()
+        {
+            var keyValuePairList = Params.Select(currentParam => currentParam.Key + "=" + currentParam.Value).ToList();
+            Text = Params.Count == 0 ? "Empty string" : string.Join("&", keyValuePairList);
         }
     }
 }
