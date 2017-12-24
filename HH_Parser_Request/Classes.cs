@@ -16,20 +16,7 @@ namespace HH_Parser_Request
         public bool laboring { get; set; }
         public string name { get; set; }
     }
-    public class HeaderParameters
-    {
-        public HeaderParameters()
-        {
 
-        }
-        public HeaderParameters(string i_key, string i_value)
-        {
-            key = i_key;
-            value = i_value;
-        }
-        public string key { get; set; }
-        public string value { get; set; }
-    }
     public class Specializations
     {
         public List<Specialization> specializations { get; set; }
@@ -39,16 +26,16 @@ namespace HH_Parser_Request
 
     class Classes
     {
-        public static async Task<string> Request(string url, List<HeaderParameters> PARAMS, string type, string body)
+        public static async Task<string> Request(string url, List<QueryParams> PARAMS, string type, string body)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            if (PARAMS != null)
-            {
-                for (int i = 0; i < PARAMS.Count; i++)
-                {
-                    request.Headers.Add(PARAMS[i].key, PARAMS[i].value);
-                }
-            }
+            //if (PARAMS != null)
+            //{
+            //    for (int i = 0; i < PARAMS.Count; i++)
+            //    {
+            //        request.Headers.Add(PARAMS[i].Key, PARAMS[i].Value);
+            //    }
+            //}
             request.Proxy = WebRequest.GetSystemWebProxy();
             request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
             request.Timeout = 30 * 1000;
@@ -66,7 +53,6 @@ namespace HH_Parser_Request
             else
                 request.ContentLength = 0;
             HttpWebResponse Resp = default(HttpWebResponse);
-
             await Task.Run(() =>
             {
                 Resp = (HttpWebResponse)request.GetResponse();

@@ -29,11 +29,14 @@ namespace HH_Parser_Request
         string total_res_to_save = "";
         string DateFormat = "dd.MM.yy HH:mm:ss";
         int global_proff_counter = 0;
-        List<HeaderParameters> HEADERS;
+        List<QueryParams> HEADERS;
         string[] SPEACIALIZERS;
         private void Form1_Load(object sender, EventArgs e)
         {
             //nothing is do here
+            string[] item_as_str = new string[] { "1", "area", "1" };
+            ListViewItem Item = new ListViewItem(item_as_str);
+            listView1.Items.Add(Item);
         }
         void SaveFile(string path_to_save_with_spec)
         {
@@ -91,7 +94,7 @@ namespace HH_Parser_Request
                 SaveLog();
             }
             string url_params = "";
-            HEADERS = new List<HeaderParameters>();
+            //HEADERS = new List<HeaderParameters>();
             url_params = "/?specialization=" + SPEACIALIZERS[global_proff_counter].ToString();
             //HEADERS.Add(new HeaderParameters("specialization", SPEACIALIZERS[global_proff_counter].ToString()));
             string[] parameters = req_params.Text.Split('\n');
