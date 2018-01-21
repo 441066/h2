@@ -35,20 +35,7 @@ namespace HH_Parser_Request
         {
             //nothing is do here
         }
-        void SaveFile(string path_to_save_with_spec)
-        {
-            // save results if they are
-            if (total_res_to_save.Trim().Length > 0)
-            {
-                string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
-                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
-                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
-                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
-                SaveLog();
-                total_res_to_save = "";
-                global_counter_of_res_to_save = 0;
-            }
-        }
+
         void Log(string text_to_log)
         {
             log_box.Text = DateTime.Now.ToString(DateFormat) + " > " + text_to_log + "\n" + log_box.Text;
@@ -75,8 +62,6 @@ namespace HH_Parser_Request
             Log("Сохраняем лог в файл");
             File.AppendAllText(Application.StartupPath + "\\log\\log_" + DateTime.Now.ToString("dd_MM_yyyy") + ".txt", log_box.Text, Encoding.UTF8);
             log_box.Text = "";
-            total_res_to_save = "";
-            qry_result.Text = "";
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -151,9 +136,14 @@ namespace HH_Parser_Request
             //ok save
             if (global_counter_of_res_to_save > CONF.RES_IN_FILE_TO_SAVE)
             {
-                SaveFile(path_to_save_with_spec);
-                global_counter_of_res_to_save = 0;
                 string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
+                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
+
+                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
+                global_counter_of_res_to_save = 0;
+                total_res_to_save = "";
+                qry_result.Text = "";
                 Log("Результат сохранен в файал: " + Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave);
             }
             //work here end
@@ -166,7 +156,11 @@ namespace HH_Parser_Request
             {
                 Work_End = DateTime.Now;
                 // save last results
-                SaveFile(path_to_save_with_spec);
+                string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
+                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
+                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
+                SaveLog();
                 Log("Обработка закончена\nВремени затрачено (минут): " + (Work_End - Work_Start).TotalMinutes.ToString());
                 if (global_proff_counter < SPEACIALIZERS.Length)
                 {
@@ -182,7 +176,9 @@ namespace HH_Parser_Request
                 go_next_spec = false;
                 Work_End = DateTime.Now;
                 string filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
-                SaveFile(path_to_save_with_spec);
+                if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                    Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
+                File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
                 SaveLog();
                 Log("Обработка закончена\nВремени затрачено (минут): " + (Work_End - Work_Start).TotalMinutes.ToString());
                 global_proff_counter++;
@@ -198,7 +194,9 @@ namespace HH_Parser_Request
                     Work_End = DateTime.Now;
                     Log("ВСЕ, РАБОТА ВООБЩЕ ЗАКОНЧЕНА.\nВремени затрачено (минут): " + (Work_End - Work_Start).TotalMinutes.ToString());
                     filenametosave = "Result_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss") + "_" + global_counter_of_res_to_save + ".txt";
-                    SaveFile(path_to_save_with_spec);
+                    if (!Directory.Exists(Application.StartupPath + "\\" + path_to_save_with_spec))
+                        Directory.CreateDirectory(Application.StartupPath + "\\" + path_to_save_with_spec);
+                    File.AppendAllText(Application.StartupPath + "\\" + path_to_save_with_spec + "\\" + filenametosave, total_res_to_save, Encoding.UTF8);
                     MessageBox.Show("Всё, запрос полностью обработан!");
                 }
             }
