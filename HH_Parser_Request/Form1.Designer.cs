@@ -46,16 +46,16 @@
             this.qry_result.BackColor = System.Drawing.Color.Black;
             this.qry_result.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.qry_result.ForeColor = System.Drawing.Color.Lime;
-            this.qry_result.Location = new System.Drawing.Point(14, 330);
+            this.qry_result.Location = new System.Drawing.Point(14, 435);
             this.qry_result.Name = "qry_result";
             this.qry_result.ReadOnly = true;
-            this.qry_result.Size = new System.Drawing.Size(375, 310);
+            this.qry_result.Size = new System.Drawing.Size(375, 205);
             this.qry_result.TabIndex = 0;
             this.qry_result.Text = "";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 296);
+            this.button1.Location = new System.Drawing.Point(14, 401);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(375, 28);
             this.button1.TabIndex = 1;
@@ -65,7 +65,7 @@
             // 
             // timer_main
             // 
-            this.timer_main.Interval = 800;
+            this.timer_main.Interval = 600;
             this.timer_main.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label1
@@ -73,20 +73,21 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 15);
+            this.label1.Size = new System.Drawing.Size(56, 15);
             this.label1.TabIndex = 2;
-            this.label1.Text = "qry params";
+            this.label1.Text = "Запросы";
             // 
             // req_params
             // 
             this.req_params.BackColor = System.Drawing.Color.Black;
             this.req_params.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.req_params.ForeColor = System.Drawing.Color.Lime;
-            this.req_params.Location = new System.Drawing.Point(14, 29);
+            this.req_params.Location = new System.Drawing.Point(12, 29);
             this.req_params.Name = "req_params";
-            this.req_params.Size = new System.Drawing.Size(375, 77);
+            this.req_params.Size = new System.Drawing.Size(375, 192);
             this.req_params.TabIndex = 3;
-            this.req_params.Text = "area=1\nexperience=noExperience";
+            this.req_params.Text = "area=1\nexperience=noExperience\n~\narea=113\nexperience=noExperience\n~\narea=2\nexperi" +
+    "ence=noExperience";
             // 
             // log_box
             // 
@@ -103,7 +104,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(392, 9);
+            this.label2.Location = new System.Drawing.Point(393, 10);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(28, 15);
             this.label2.TabIndex = 5;
@@ -114,9 +115,9 @@
             this.spec_box.BackColor = System.Drawing.Color.Black;
             this.spec_box.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.spec_box.ForeColor = System.Drawing.Color.Lime;
-            this.spec_box.Location = new System.Drawing.Point(12, 112);
+            this.spec_box.Location = new System.Drawing.Point(14, 227);
             this.spec_box.Name = "spec_box";
-            this.spec_box.Size = new System.Drawing.Size(375, 178);
+            this.spec_box.Size = new System.Drawing.Size(375, 166);
             this.spec_box.TabIndex = 7;
             this.spec_box.Text = resources.GetString("spec_box.Text");
             // 
